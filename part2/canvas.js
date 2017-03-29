@@ -16,6 +16,8 @@ $( document ).ready(function() {
 	var deviations
 	var isTracking = false;					// flag to turn on/off tracking
 
+	var radiusPlotForAnalysis = [];			// create an array to store the sample #, radius plot for analysis later
+
 	// Setup an empty layer for userPath without any points yet
 	addUserPathLayer();
 	
@@ -37,7 +39,7 @@ $( document ).ready(function() {
 	$('canvas').drawArc({
 	  fillStyle: '#0a0', // green
 	  opacity: 0.75,
-	  x: spiral.start.x, y: spiral.start.y,
+	  x: spiral.startPoint.x, y: spiral.startPoint.y,
 	  radius: hoverTargetsRadius,
 	  layer: true,
 	  name: 'startCircle',
@@ -45,7 +47,6 @@ $( document ).ready(function() {
 	    $(this).animateLayer('startCircle', {
 	      fillStyle: '#0d0'
 	    }, 250);
-
 	  	isTracking = true;
 
 	  },
@@ -72,7 +73,7 @@ $( document ).ready(function() {
 	    if(isTracking){ 		// only trigger if we already hit the green circle
 		    isTracking = false;
 		    didHitFinish = true;
-		    analyzePerformance();
+		    var analysis = new Analysis(radiusPlotForAnalysis);
 		}
 	  },
 	  mouseout: function() {
@@ -135,6 +136,9 @@ $( document ).ready(function() {
 			var pathLayer = $('canvas').getLayer('userPath');	
 			pathLayer['x'+i] = pathPoints[i-1][0];
 			pathLayer['y'+i] = pathPoints[i-1][1];
+
+			radiusPlotForAnalysis.push({x: pathPoints[i-1][0] - spiral.startPoint.x, 
+									  y: pathPoints[i-1][1] - spiral.startPoint.y});
 		}
   	});
 
@@ -151,31 +155,12 @@ $( document ).ready(function() {
 	function resetPath(){
 		// clear the points array, delete userPath and add a blank userPath layer
 	  	pathPoints = [];
+	  	radiusPlotForAnalysis = [];
 	  	isTracking = false;
 	  	$('canvas').removeLayer('userPath');
+	  	$('#results').html("");
 	  	addUserPathLayer();
 	  	$('canvas').drawLayers();
 	}
-
-	function showGuideline(show){
-		$('canvas').setLayer('guideline', {visible: show}).drawLayers();
-	}
-
-	function analyzePerformance(){
-
-		// 1. calculate the total area of the deviations (aka the integral)
-		var areaUnderCurve = 0;
-		for(i=0; i<pathPoints.length; i++){
-			// a straight line parallel to the x-axis simplifies the math: 
-			// we just need to find the absolute difference in y pixels for every i-th x pixel.
-			var ydiff = pathPoints[i][1] - spiral.start.y; 
-			areaUnderCurve = areaUnderCurve + Math.abs(ydiff);
-
-			// Note: If you wanted this to work for a straight line no matter where the start/end points were,
-			// would need to calculate the slope of the line (y=mx+b) to identify the line's y value at each point
-		}
-
-		$('#results').html('[ Analysis in development ]');
-
-	}
+	
 });

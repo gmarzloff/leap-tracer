@@ -8,7 +8,7 @@ class Spiral {
 	// where r(theta) = speed * theta + b
 
 	constructor(params){
-		this.start = params.startPoint;
+		this.startPoint = params.startPoint;
 		this.numberOfLoops = params.numberOfLoops;
 		this.radiusGrowthRate = params.radiusGrowthRate;
 		this.centerHoleRadius = params.centerHoleRadius;
@@ -29,8 +29,8 @@ class Spiral {
 			{r: this.radiusGrowthRate * this.numberOfLoops * 360,
 			angle: this.numberOfLoops * 2 * Math.PI});
 
-		return {x: point.x + this.start.x, 
-				y: point.y + this.start.y}; // includes the offset of where the spiral starts
+		return {x: point.x + this.startPoint.x, 
+				y: point.y + this.startPoint.y}; // includes the offset of where the spiral starts
 	};
 
 	generateGuidelinePoints(){
@@ -44,8 +44,8 @@ class Spiral {
 			var currRad = radFromDeg(currentDegrees);
 			var point = this.xyForPolar({r: this.radiusGrowthRate * currentDegrees + this.centerHoleRadius, 
 										angle: currRad});
-			allPoints['x'+(currentDegrees+1)] = point.x + this.start.x;
-			allPoints['y'+(currentDegrees+1)] = point.y + this.start.y;
+			allPoints['x'+(currentDegrees+1)] = point.x + this.startPoint.x;
+			allPoints['y'+(currentDegrees+1)] = point.y + this.startPoint.y;
 		}
 		return allPoints;
 	};
