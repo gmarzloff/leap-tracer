@@ -107,7 +107,7 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	      fillStyle: '#55f'						// code for a lighter shade of blue
 	    }, 250);
 
-	    isTracking = false;
+	    isTracking = false;						
 	    showGuideline(true);
 	    analyzePerformance();					// see the analyzePerformance() function below
 	  },
