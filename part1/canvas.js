@@ -2,6 +2,11 @@
 // This javascript is used to manage the tracer canvas 
 // Developed by George Marzloff (george@marzloffmedia.com)
 
+// This is a single line javascript comment.
+
+/*  This is a javascript comment
+	across multiple lines. */
+
 $( document ).ready(function() {	// when the html file finishes loading in the browser, run this method.
 									// for our purposes, a method is synonymous with function (a set of instructions).
        
