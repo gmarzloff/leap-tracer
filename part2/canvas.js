@@ -7,11 +7,10 @@ $( document ).ready(function() {
   	var spiral = new Spiral({				// we create a Spiral object here.
 		startPoint: {x: 400, y: 210},		// See Spiral() object in spiral.js
 		numberOfLoops: 3.15,
-		radiusGrowthRate: 0.15,
-		centerHoleRadius: 10				// adding a constant to the equation generates a center hole
+		radiusGrowthRate: 0.15
 	}); 		
 
-	var hoverTargetsRadius = 20;			
+	var hoverTargetsRadius = 15;			
 	var pathPoints = [];					// stores the path of the mouse
 	var deviations
 	var isTracking = false;					// flag to turn on/off tracking
