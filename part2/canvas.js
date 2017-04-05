@@ -12,13 +12,12 @@ $( document ).ready(function() {
 
 	var hoverTargetsRadius = 15;			
 	var pathPoints = [];					// stores the path of the mouse
-	var deviations
 	var isTracking = false;					// flag to turn on/off tracking
 
 	var radiusPlotForAnalysis = [];			// create an array to store the sample #, radius plot for analysis later
 
-	// Setup an empty layer for userPath without any points yet
-	addUserPathLayer();
+	addUserPathLayer();						// Run a function to setup an empty layer for userPath without any points yet.
+											// look for function addUserPathLayer() below to see the instructions
 	
 	// CREATE LAYER FOR SPIRAL GUIDELINE
 	$('canvas').drawLine({
@@ -29,16 +28,17 @@ $( document ).ready(function() {
 		layer: true
 	});
 
-	// ADD GUIDELINE POINTS TO THE GUIDELINE LAYER
+  	// ADD THE SPIRAL GUIDELINE POINTS TO THE LAYER AND DRAW IT
 	$('canvas').setLayer('guideline', spiral.guidelinePoints)
 	.drawLayers();
 	
 
-	// DRAW THE STARTING CIRCLE
+	// Draw the starting circle on the canvas using drawArc method
 	$('canvas').drawArc({
 	  fillStyle: '#0a0', // green
 	  opacity: 0.75,
-	  x: spiral.startPoint.x, y: spiral.startPoint.y,
+	  x: spiral.startPoint.x, 
+	  y: spiral.startPoint.y,
 	  radius: hoverTargetsRadius,
 	  layer: true,
 	  name: 'startCircle',
@@ -60,7 +60,8 @@ $( document ).ready(function() {
 	$('canvas').drawArc({
 	  fillStyle: '#00d', // green
 	  opacity: 0.75,
-	  x: spiral.endPoint.x, y: spiral.endPoint.y,
+	  x: spiral.endPoint.x, 
+	  y: spiral.endPoint.y,
 	  radius: hoverTargetsRadius,
 	  layer: true,
 	  name: 'targetCircle',
@@ -71,8 +72,8 @@ $( document ).ready(function() {
 	    
 	    if(isTracking){ 		// only trigger if we already hit the green circle
 		    isTracking = false;
-		    didHitFinish = true;
 		    var analysis = new Analysis(radiusPlotForAnalysis);
+		    analysis.printResults();
 		}
 	  },
 	  mouseout: function() {
@@ -106,6 +107,8 @@ $( document ).ready(function() {
 			resetPath();
 		}
 	});
+
+	// DRAW TEXT ON RESET BUTTON
 	$('canvas').drawText({
 		fillStyle: '#fff',
 		x: $('canvas').getLayer('resetButton').x,

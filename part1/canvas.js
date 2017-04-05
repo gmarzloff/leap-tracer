@@ -20,41 +20,6 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	var pathPoints = [];			// creates an array (a list) of all the points that make the cursor's path
 	var isTracking = false;			// flag to turn on/off cursor tracking. Keep off (false) to start.
 
-	// $('canvas'). means find all the canvases on the page, and run this drawRect() method on them.
-	// In this drawRect, we draw an invisible layer to track the mouse
-	$('canvas').drawRect({	
-		x: 400, y: 200,			// set the center of the rectangle to the middle of the canvas 
-		width: 800,				// same as canvas width
-		height: 400,			// same as canvas height
-		layer: true,			// create a new drawing layer on the canvas
-		name: 'cursorTracker',	// we can refer to this layer as 'cursorTracker' later on
-		mousemove: function(){	// every time the mouse moves, run these instructions
-       
-			if(isTracking == true){  	// only run if isTracking is true (i.e. cursor hit the green circle)
-				
-				// corrects the absolute cursor position (pageX & pageY) to the cursor position 
-				// ** relative to the top left (origin) of the canvas **
-				var rect = $('canvas').offset();		
-				var cursor_x = event.pageX - rect.left;	
-				var cursor_y = event.pageY - rect.top;	
-
-				// add the cursor point [cursor_x,cursor_y] to the end of the pathPoints array to store the path's data
-				// it creates a nested (multi-dimensional) array: each point is an array inside the pathPoints array 
-				pathPoints.push([cursor_x, cursor_y]);	
-
-				var i = pathPoints.length;
-				var pathLayer = $('canvas').getLayer('userPath');	
-
-				// Now add properties to the userPath layer (we temporarily call it pathLayer for convenience). 
-				// point #1 adds x1 & y1 properties, point #2 adds x2 & y2 properties, etc
-				// if there are 5 items in pathPoints, pathLayer['x'+i] turns into pathLayer['x5']
-				// Note: the item index in an array starts with 0, i.e. pathPoints[0] = the 1st element. 
-				pathLayer['x'+i] = pathPoints[i-1][0];	 // x-coordinate is stored in pathPoints[i-1][0]
-				pathLayer['y'+i] = pathPoints[i-1][1];	 // y-coordinate is stored in pathPoints[i-1][1]
-			}
-		}
-	}).drawLayers();		// re-draw the canvas layers to show the updated path
-
 	addUserPathLayer();		// Run a function to setup an empty layer for userPath without any points yet.
 							// look for function addUserPathLayer() below to see the instructions
 	
@@ -98,7 +63,8 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	// Draw the target blue circle on the canvas using drawArc method. Very similar code to the starting circle above.
 	$('canvas').drawArc({
 	  fillStyle: '#00d', 						// code for a shade of blue
-	  x: endPoint.x, y: endPoint.y,
+	  x: endPoint.x, 
+	  y: endPoint.y,
 	  radius: hoverTargetsRadius,
 	  layer: true,
 	  name: 'targetCircle',
@@ -107,9 +73,11 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	      fillStyle: '#55f'						// code for a lighter shade of blue
 	    }, 250);
 
-	    isTracking = false;						
-	    showGuideline(true);
-	    analyzePerformance();					// see the analyzePerformance() function below
+	    if(isTracking){
+		    isTracking = false;						
+		    showGuideline(true);
+		    analyzePerformance();					// see the analyzePerformance() function below
+		}
 	  },
 	  mouseout: function() {
 	  	 $(this).animateLayer('targetCircle', {
@@ -127,6 +95,32 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	  text: 'Mouseover the green circle and draw a straight line to the blue circle.',
 	  layer: true,
 	  name: 'resetText'
+	});
+
+	$('canvas').mousemove(function(event){	// every time the mouse moves, run these instructions
+   
+		if(isTracking == true){  	// only run if isTracking is true (i.e. cursor hit the green circle)
+			
+			// corrects the absolute cursor position (pageX & pageY) to the cursor position 
+			// ** relative to the top left (origin) of the canvas **
+			var rect = $('canvas').offset();		
+			var cursor_x = event.pageX - rect.left;	
+			var cursor_y = event.pageY - rect.top;	
+
+			// add the cursor point [cursor_x,cursor_y] to the end of the pathPoints array to store the path's data
+			// it creates a nested (multi-dimensional) array: each point is an array inside the pathPoints array 
+			pathPoints.push([cursor_x, cursor_y]);	
+
+			var i = pathPoints.length;
+			var pathLayer = $('canvas').getLayer('userPath');	
+
+			// Now add properties to the userPath layer (we temporarily call it pathLayer for convenience). 
+			// point #1 adds x1 & y1 properties, point #2 adds x2 & y2 properties, etc
+			// if there are 5 items in pathPoints, pathLayer['x'+i] turns into pathLayer['x5']
+			// Note: the item index in an array starts with 0, i.e. pathPoints[0] = the 1st element. 
+			pathLayer['x'+i] = pathPoints[i-1][0];	 // x-coordinate is stored in pathPoints[i-1][0]
+			pathLayer['y'+i] = pathPoints[i-1][1];	 // y-coordinate is stored in pathPoints[i-1][1]
+		}	
 	});
 
 	function addUserPathLayer(){
