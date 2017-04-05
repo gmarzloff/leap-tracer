@@ -2,26 +2,16 @@
 // Analysis of Spiral performance
 // Developed by George Marzloff (george@marzloffmedia.com)
 
-class Analysis {
+function Analysis(_userPath) {
 
 	// The r and theta polar coordinates of the spiral function are linearly related  
 	// So we can plot this relationship: the angles along the x-axis and r's on the y-axis.
 	// Since every change in cursor position should increase the radius in a linear fashion, we can 
 	// run a regression of (sample #, radius) points to calculate an accuracy score (using R^2).  
 
-	constructor(_userPath){
-		this.userPath = _userPath
-		this.radiiData = this.generateRadiiOnSamplesData(this.userPath);
-		this.regression = this.linearRegression(this.radiiData);
+	this.userPath = _userPath
 
-		var accuracyPct = Math.round(this.regression.r2 * 100); // rounds R^2
-		$('#results').html("Accuracy: " + accuracyPct + "%");
-
-		// Output data to CSV in the console with this function
-		// console.log(this.generateCSV(this.radiiData));
-	}
-
-	generateRadiiOnSamplesData(path){
+	this.generateRadiiOnSamplesData = function(path){
 		// incoming path is an array of objects of {x,y} points
 		var data = [];
 		for (var i=0; i<path.length; i++){
@@ -32,7 +22,7 @@ class Analysis {
 		return data;
 	};
 
-	linearRegression(data){
+	this.linearRegression = function(data){
 		// Adapted from Trent Richardson's code snippet
 		// Credit: http://trentrichardson.com/2010/04/06/compute-linear-regressions-in-javascript/
 
@@ -60,12 +50,25 @@ class Analysis {
 		return lr;
 	};
 
-	generateCSV(data){
+	this.radiiData = this.generateRadiiOnSamplesData(this.userPath);
+	this.regression = this.linearRegression(this.radiiData);
+
+	this.printResults = function(){
+		var accuracyPct = Math.round(this.regression.r2 * 100); // rounds R^2
+		$('#results').html("Accuracy: " + accuracyPct + "%");
+
+		// Output data to CSV in the console with this function
+		// console.log(this.generateCSV(this.radiiData));
+	};
+
+	this.generateCSV = function(data){
+		// utility function to output data in CSV format for adding to spreadsheet
 		var str = "";
 		for(var i=0; i< data.length; i++){
-			str += data[i].angle + ", " + data[i].radius + "\n";
+			str += i + ", " + data[i].radius + "\n";
 		}
-	}
+		return str;
+	};
 } 
 
 
