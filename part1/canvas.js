@@ -75,7 +75,7 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 
 	    if(isTracking){
 		    isTracking = false;						
-		    showGuideline(true);
+		    showGuideline(true);					// show the grey guideline (find the function below)
 		    analyzePerformance();					// see the analyzePerformance() function below
 		}
 	  },
@@ -97,7 +97,7 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	  name: 'resetText'
 	});
 
-	$('canvas').mousemove(function(event){	// every time the mouse moves, run these instructions
+	$('canvas').mousemove(function(event){	// every time the mouse moves in the canvas, run these instructions
    
 		if(isTracking == true){  	// only run if isTracking is true (i.e. cursor hit the green circle)
 			
@@ -157,7 +157,7 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 
 		var sumOfDeviations = 0;	// create the sum variable with starting value of 0
 
-		// this is a for loop. Using 'i' as a counter starting at 0, it will run the instructions within the { }.
+		// next is a for loop. Using 'i' as a counter starting at 0, it will run the instructions within the { }.
 		// It increases the counter by 1, and loops again. This continues while i < pathPoints.length (size of the array)
 		// to account for every point in the path. 
 
