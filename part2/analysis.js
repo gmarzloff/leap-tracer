@@ -19,6 +19,8 @@ function Analysis(_userPath) {
 			var radius = Math.sqrt(pt.x*pt.x + pt.y*pt.y);
 			data.push({sample: i, radius: radius});
 		}
+		this.truncateInitialPointsBeforeTrueStart(data);	// see explanation in method below
+		
 		return data;
 	};
 
@@ -69,7 +71,25 @@ function Analysis(_userPath) {
 		}
 		return str;
 	};
+
+	this.truncateInitialPointsBeforeTrueStart(data){
+
+		// Since recording starts when the cursor hits the border of the starting circle, 
+		// the radii start positive and decrease as user moves toward center, creating a dip in the data.
+		// we can find the minimum radius point near the start of the path and ignore the data points prior to that.
+
+		var minRadius = 200; // picked a number definitely higher than the radius of the starting circle
+		var windowSizeToSearchForMinimum = 150; // will go through data indices 0 to this.
+		var minElement = {index: 0, radius: minRadius};
+
+		for(var j=0; j<windowSizeToSearchForMinimum;j++){
+			if (data[j].radius < minElement.radius){
+				minElement = {index: j, radius: data[j].radius}; // overwrites if the radius is lower than the prior min
+			}
+		}
+		data.splice(0, minElement.index-1); // this deletes everything before the minElement index.
+
+		return data;
+	};
 } 
-
-
 
