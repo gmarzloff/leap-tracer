@@ -31,7 +31,6 @@ $( document ).ready(function() {
   	// ADD THE SPIRAL GUIDELINE POINTS TO THE LAYER AND DRAW IT
 	$('canvas').setLayer('guideline', spiral.guidelinePoints)
 	.drawLayers();
-	
 
 	// Draw the starting circle on the canvas using drawArc method
 	$('canvas').drawArc({
@@ -132,13 +131,14 @@ $( document ).ready(function() {
 			var cursor_x = event.pageX - rect.left;
 			var cursor_y = event.pageY - rect.top;
 
-			pathPoints.push([cursor_x, cursor_y]);	// add the cursor coordinates into an array
+			pathPoints.push([cursor_x, cursor_y]);	// .push() adds an element to end of an array
 
 			var i = pathPoints.length;	// use this # to create the property name e.g. x1, x2, x3, etc
 			var pathLayer = $('canvas').getLayer('userPath');	
 			pathLayer['x'+i] = pathPoints[i-1][0];
 			pathLayer['y'+i] = pathPoints[i-1][1];
 
+			// .push() adds an element (in this case, an object) to the end of the array
 			radiusPlotForAnalysis.push({x: pathPoints[i-1][0] - spiral.startPoint.x, 
 									  y: pathPoints[i-1][1] - spiral.startPoint.y});
 		}
