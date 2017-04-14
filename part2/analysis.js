@@ -9,7 +9,27 @@ function Analysis(_userPath) {
 	// Since every change in cursor position should increase the radius in a linear fashion, we can 
 	// run a regression of (sample #, radius) points to calculate an accuracy score (using R^2).  
 
-	this.userPath = _userPath
+	this.userPath = _userPath; 
+
+	this.truncateInitialPointsBeforeTrueStart = function(data){
+
+		// Since recording starts when the cursor hits the border of the starting circle, 
+		// the radii start positive and decrease as user moves toward center, creating a dip in the data.
+		// we can find the minimum radius point near the start of the path and ignore the data points prior to that.
+
+		var minRadius = 200; // picked a number definitely higher than the radius of the starting circle
+		var windowSizeToSearchForMinimum = 150; // will go through data indices 0 to this.
+		var minElement = {index: 0, radius: minRadius};
+
+		for(var j=0; j<windowSizeToSearchForMinimum;j++){
+			if (data[j].radius < minElement.radius){
+				minElement = {index: j, radius: data[j].radius}; // overwrites if the radius is lower than the prior min
+			}
+		}
+		data.splice(0, minElement.index-1); // this deletes everything before the minElement index.
+
+		return data;
+	};
 
 	this.generateRadiiOnSamplesData = function(path){
 		// incoming path is an array of objects of {x,y} points
@@ -17,9 +37,10 @@ function Analysis(_userPath) {
 		for (var i=0; i<path.length; i++){
 			var pt = path[i];
 			var radius = Math.sqrt(pt.x*pt.x + pt.y*pt.y);
-			data.push({sample: i, radius: radius});
+			data.push({sample: i, radius: radius});		
 		}
-		this.truncateInitialPointsBeforeTrueStart(data);	// see explanation in method below
+		this.truncateInitialPointsBeforeTrueStart(data);	
+		// see explanation in method above
 		
 		return data;
 	};
@@ -37,17 +58,17 @@ function Analysis(_userPath) {
 		var sum_yy = 0;
 
 		for (var i = 0; i < data.length; i++) {
-			sum_x  += data[i].sample;
+			sum_x  += data[i].sample; // note the +=, it means sum_x = sum_x + data[i].sample.
 			sum_y  += data[i].radius;
 			sum_xy += (data[i].sample * data[i].radius);
 			sum_xx += (data[i].sample * data[i].sample);
 			sum_yy += (data[i].radius * data[i].radius);
 		} 
 
-		lr['slope'] = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
-		lr['intercept'] = (sum_y - lr.slope * sum_x)/n;
-		lr['r2'] = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
-		lr['fn'] = function (x) { return this.slope * x + this.intercept; };
+		lr.slope = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
+		lr.intercept = (sum_y - lr.slope * sum_x)/n;
+		lr.r2 = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
+		lr.fn = function (x) { return this.slope * x + this.intercept; };
 
 		return lr;
 	};
@@ -70,26 +91,6 @@ function Analysis(_userPath) {
 			str += i + ", " + data[i].radius + "\n";
 		}
 		return str;
-	};
-
-	this.truncateInitialPointsBeforeTrueStart(data){
-
-		// Since recording starts when the cursor hits the border of the starting circle, 
-		// the radii start positive and decrease as user moves toward center, creating a dip in the data.
-		// we can find the minimum radius point near the start of the path and ignore the data points prior to that.
-
-		var minRadius = 200; // picked a number definitely higher than the radius of the starting circle
-		var windowSizeToSearchForMinimum = 150; // will go through data indices 0 to this.
-		var minElement = {index: 0, radius: minRadius};
-
-		for(var j=0; j<windowSizeToSearchForMinimum;j++){
-			if (data[j].radius < minElement.radius){
-				minElement = {index: j, radius: data[j].radius}; // overwrites if the radius is lower than the prior min
-			}
-		}
-		data.splice(0, minElement.index-1); // this deletes everything before the minElement index.
-
-		return data;
 	};
 } 
 
