@@ -26,7 +26,7 @@ In this tutorial, you will:
  3. analyze user performance drawing a straight line
 
  
-## Part 2 Tutorial (under development)
+## Part 2 Tutorial
 This tutorial expands on Part 1. Instead of tracing a straight line,  the user will trace an Archimedes spiral. Spiral tracing has been shown to be a valid method for quantifying essential tremors and Parkinsonian tremor ([Memedi et al 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4610483/), [Saunders-Pullman et al 2008](https://www.ncbi.nlm.nih.gov/pubmed/18074362/)). 
 
  1. setup an HTML5 canvas and track mouse cursor position
