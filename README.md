@@ -33,7 +33,7 @@ This tutorial expands on Part 1. Instead of tracing a straight line,  the user w
  2. create the Archimedes spiral guide tracing
  3. analyze tracing speed and accuracy
 
-## Part 3 Tutorial (under development)
+## Part 3 Tutorial
 In this third part, we will use LeapMotion, to draw lines and spirals in the air. 
 
  1. setup LeapMotion controller in Javascript
