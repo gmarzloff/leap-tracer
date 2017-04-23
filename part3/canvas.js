@@ -12,7 +12,7 @@ $( document ).ready(function() {
 
 	var hoverTargetsRadius = 15;			
 	var pathPoints = [];					// stores the path of the mouse
-	var isTracking = false;					// flag to turn on/off tracking
+	var isTracking = false;					// flag to turn on/off tracking (i.e. path drawing code. Leap tracking is always on)
 
 	var radiusPlotForAnalysis = [];			// create an array to store the sample #, radius plot for analysis later
 
@@ -110,7 +110,6 @@ $( document ).ready(function() {
 	  layer: true,
 	  name: 'leapCursor',
 	  visible: false,
-
 	});
 
 	function addUserPathLayer(){
@@ -141,34 +140,42 @@ $( document ).ready(function() {
 	Leap.loop({}, function(frame) {
 		// All the data we need is passed to the object called frame, for every capture frame.
 
-        // Get a pointable (finger or any stick tool) and normalize the tip position
-        if(frame.pointables.length > 0){
+        if(frame.pointables.length > 0){ 
+        	// There is at least one pointable (finger or any stick tool) object in the field, so get to work!
 
-	        var pointable = frame.pointables[0];
+        	// Take the first pointable currently in the frame and normalize the tip position
+	        var pointable = frame.pointables[0]; 
 	        var interactionBox = frame.interactionBox;
 	        var normalizedPosition = interactionBox.normalizePoint(pointable.tipPosition, true);
 	        
-	        var leapCursorLayer = $('canvas').getLayer('leapCursor'); 
-
 	        // Convert the normalized coordinates to span the canvas
 	        var pointerOnCanvas = {x: $('canvas').width() * normalizedPosition[0],
 	        					   y: $('canvas').height() * (1 - normalizedPosition[1])};
 	        // we can ignore z for a 2D context
 
-	        // if the point moved, check collision with start circle
+	       	var leapCursorLayer = $('canvas').getLayer('leapCursor'); 
+
+	        // if the fingertip moved since last frame, check if it collides with the startCircle layer
+	        // a != b means 'a does not equal b'. || means OR, and && means AND.
 	        if(	((Math.round(pointerOnCanvas.x) != Math.round(leapCursorLayer.x)) || 
 	        	(Math.round(pointerOnCanvas.y) != Math.round(leapCursorLayer.y))) &&
 	        	isTracking == false) {
 	        
+	        	// the x's or y's do not match, so enter this block.
+	        	// check if the cursor position is colliding with the start circle using a custom method
+	        	// collisionTest() returns true or false and that value is assigned to isTracking.
 	        	isTracking = collisionTest(leapCursorLayer, $('canvas').getLayer('startCircle'));
 
 	        }else if(isTracking == true && collisionTest(leapCursorLayer, $('canvas').getLayer('targetCircle'))){
-	        	// already drawing path and hit the targetCircle
+	        	// else if the user already is drawing a path and has hit the targetCircle,
+	        	// turn off tracking and analyze
 	        	isTracking = false;
 		   		var analysis = new Analysis(radiusPlotForAnalysis);
+		   		analysis.printResults();
 	        }
 	        
-	        $('canvas').setLayer('leapxy',{text: '(' + pointerOnCanvas.x.toFixed() + ', ' + pointerOnCanvas.y.toFixed() + ')' })       
+	        // Update the text box layer with the fingertip's current coordinates
+	        $('canvas').setLayer('leapxy',{text: '(' + pointerOnCanvas.x.toFixed() + ', ' + pointerOnCanvas.y.toFixed() + ')' });
 	        leapCursorLayer.x = pointerOnCanvas.x;
 	        leapCursorLayer.y = pointerOnCanvas.y;
 	        leapCursorLayer.visible = true;
@@ -176,7 +183,6 @@ $( document ).ready(function() {
 	        if(isTracking){ 	
 				// Create a path following the leapCursorLayer
 				// add a point to the path array
-
 				pathPoints.push([pointerOnCanvas.x, pointerOnCanvas.y]);	// add the cursor coordinates into an array
 
 				var i = pathPoints.length;	// use this # to create the property name e.g. x1, x2, x3, etc
@@ -191,6 +197,7 @@ $( document ).ready(function() {
 	        $('canvas').drawLayers();
 
 	    }else{
+	    	$('canvas').setLayer('leapxy',{text: 'No Finger!' });	// turn off coordinates text output
 	    	$('canvas').setLayer('leapCursor',{visible:false})
 	    	.drawLayers();
 	    }
