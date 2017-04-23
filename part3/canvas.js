@@ -27,7 +27,7 @@ $( document ).ready(function() {
 		name: 'guideline',
 		layer: true
 	});
-	console.log(spiral);
+
 	// ADD THE SPIRAL GUIDELINE POINTS TO THE LAYER AND DRAW IT
 	$('canvas').setLayer('guideline', spiral.guidelinePoints)
 	.drawLayers();
@@ -40,8 +40,8 @@ $( document ).ready(function() {
 	  y: spiral.startPoint.y,
 	  radius: hoverTargetsRadius,
 	  layer: true,
-	  name: 'startCircle',
-	  index: 2 					// NEEDED?
+	  name: 'startCircle'
+	  // Notice! mouseover and mouseout functions are removed
 	});
 
 	// DRAW THE TARGET CIRCLE
@@ -51,9 +51,8 @@ $( document ).ready(function() {
 	  x: spiral.endPoint.x, y: spiral.endPoint.y,
 	  radius: hoverTargetsRadius,
 	  layer: true,
-	  name: 'targetCircle',
-	  index: 3					// NEEDED?	
-	  // mouseover and mouseout functions are removed		
+	  name: 'targetCircle'
+	  // Notice! mouseover and mouseout functions are removed		
 	});
 
 	// DRAW INSTRUCTIONS TEXT
@@ -64,7 +63,7 @@ $( document ).ready(function() {
 	  fontFamily: 'Verdana, sans-serif',
 	  text: 'Mouseover the green circle and trace the spiral to the blue circle.',
 	  layer: true,
-	  name: 'instructionsText'
+	  name: 'instructionsText'	
 	});
 
 	// DRAW RESET BUTTON
@@ -75,7 +74,6 @@ $( document ).ready(function() {
 		layer: true,
 		name: 'resetButton',
 		cornerRadius: 10,
-		index:0,			// NEEDED?
 		click: function(){
 			resetPath();
 		}
@@ -91,8 +89,7 @@ $( document ).ready(function() {
 		text: 'Reset',
 		layer: true,
 		name: 'resetText',
-		intangible: true,
-		index: 1
+		intangible: true
 	});
 
 	// LEAP MOTION TEXT POSITION
