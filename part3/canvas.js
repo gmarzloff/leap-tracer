@@ -8,23 +8,16 @@ $( document ).ready(function() {
 		startPoint: {x: 400, y: 210},		// See Spiral() object in spiral.js
 		numberOfLoops: 3.15,
 		radiusGrowthRate: 0.15,
-		centerHoleRadius: 10				// adding a constant to the equation generates a center hole
 	}); 		
 
-	var hoverTargetsRadius = 20;			
+	var hoverTargetsRadius = 15;			
 	var pathPoints = [];					// stores the path of the mouse
-	var deviations
 	var isTracking = false;					// flag to turn on/off tracking
 
 	var radiusPlotForAnalysis = [];			// create an array to store the sample #, radius plot for analysis later
 
-
-
-	//////////////////////////////////////////////////////
-	// INSTRUCTIONS FOR CANVAS DRAWING LAYERS
-
-	// Setup an empty layer for userPath without any points yet
-	addUserPathLayer();
+	addUserPathLayer();						// Run a function to setup an empty layer for userPath without any points yet.
+											// look for function addUserPathLayer() below to see the instructions
 	
 	// CREATE LAYER FOR SPIRAL GUIDELINE
 	$('canvas').drawLine({
@@ -34,21 +27,21 @@ $( document ).ready(function() {
 		name: 'guideline',
 		layer: true
 	});
-
-	// ADD GUIDELINE POINTS TO THE GUIDELINE LAYER
+	console.log(spiral);
+	// ADD THE SPIRAL GUIDELINE POINTS TO THE LAYER AND DRAW IT
 	$('canvas').setLayer('guideline', spiral.guidelinePoints)
 	.drawLayers();
-	
 
-	// DRAW THE STARTING CIRCLE
+	// Draw the starting circle on the canvas using drawArc method
 	$('canvas').drawArc({
 	  fillStyle: '#0a0', // green
 	  opacity: 0.75,
-	  x: spiral.startPoint.x, y: spiral.startPoint.y,
+	  x: spiral.startPoint.x, 
+	  y: spiral.startPoint.y,
 	  radius: hoverTargetsRadius,
 	  layer: true,
 	  name: 'startCircle',
-	  index: 2
+	  index: 2 					// NEEDED?
 	});
 
 	// DRAW THE TARGET CIRCLE
@@ -59,7 +52,8 @@ $( document ).ready(function() {
 	  radius: hoverTargetsRadius,
 	  layer: true,
 	  name: 'targetCircle',
-	  index:3
+	  index: 3					// NEEDED?	
+	  // mouseover and mouseout functions are removed		
 	});
 
 	// DRAW INSTRUCTIONS TEXT
@@ -81,11 +75,13 @@ $( document ).ready(function() {
 		layer: true,
 		name: 'resetButton',
 		cornerRadius: 10,
-		index:0,
+		index:0,			// NEEDED?
 		click: function(){
 			resetPath();
 		}
 	});
+
+	// DRAW TEXT ON RESET BUTTON
 	$('canvas').drawText({
 		fillStyle: '#fff',
 		x: $('canvas').getLayer('resetButton').x,
