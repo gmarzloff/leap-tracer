@@ -18,10 +18,15 @@ function Analysis(_userPath) {
 		// we can find the minimum radius point near the start of the path and ignore the data points prior to that.
 
 		var minRadius = 200; // picked a number definitely higher than the radius of the starting circle
-		var windowSizeToSearchForMinimum = 150; // will go through data indices 0 to this.
 		var minElement = {index: 0, radius: minRadius};
 
-		for(var j=0; j<windowSizeToSearchForMinimum;j++){
+		var windowSizeToSearchForMinimum = 100; // will go through data indices 0 to this one.
+		if(data.length <= windowSizeToSearchForMinimum){ // make sure the path drawn is longer than the window
+			windowSizeToSearchForMinimum = data.length;
+		}
+
+		for(var j=0; j < windowSizeToSearchForMinimum; j++){
+			console.log(data[j]);
 			if (data[j].radius < minElement.radius){
 				minElement = {index: j, radius: data[j].radius}; // overwrites if the radius is lower than the prior min
 			}
