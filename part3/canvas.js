@@ -205,7 +205,7 @@ $( document ).ready(function() {
 	});
 
 	function collisionTest(obj1,obj2){
-		// This functions tests if the distance between the centers of two round layers 
+		// This function tests if the distance between the centers of two round layers 
 		// is less than the sum of their radii. If so, there is a collision.
 		// assumes obj1 and obj2 are type: arc layers
 		var sumOfRadii = obj1.radius + obj2.radius;
