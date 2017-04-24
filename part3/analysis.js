@@ -26,7 +26,6 @@ function Analysis(_userPath) {
 		}
 
 		for(var j=0; j < windowSizeToSearchForMinimum; j++){
-			console.log(data[j]);
 			if (data[j].radius < minElement.radius){
 				minElement = {index: j, radius: data[j].radius}; // overwrites if the radius is lower than the prior min
 			}
