@@ -205,17 +205,15 @@ $( document ).ready(function() {
 	});
 
 	function collisionTest(obj1,obj2){
-		// This functions tests if the center of obj1 layer has entered the box around obj2 layer
+		// This functions tests if the distance between the centers of two round layers 
+		// is less than the sum of their radii. If so, there is a collision.
 		// assumes obj1 and obj2 are type: arc layers
-		var diffInX = (obj2.x + obj2.radius) - obj1.x;
-		var diffInY = (obj2.y + obj2.radius) - obj1.y;
+		var sumOfRadii = obj1.radius + obj2.radius;
+		var diffInX = obj2.x - obj1.x;
+		var diffInY = obj2.y - obj1.y;
+		var vectorMagnitude = Math.sqrt(diffInX*diffInX + diffInY*diffInY);
 
-		if((diffInX < obj2.radius*2) && (diffInX > 0) && (diffInY < obj2.radius*2) && (diffInY > 0)){
-			// hit detected!	
-			return true;
-		}else {
-			return false;
-		}
+		return vectorMagnitude < sumOfRadii; 
 	}
 	
 });
