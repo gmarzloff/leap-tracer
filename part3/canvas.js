@@ -8,23 +8,16 @@ $( document ).ready(function() {
 		startPoint: {x: 400, y: 210},		// See Spiral() object in spiral.js
 		numberOfLoops: 3.15,
 		radiusGrowthRate: 0.15,
-		centerHoleRadius: 10				// adding a constant to the equation generates a center hole
 	}); 		
 
-	var hoverTargetsRadius = 20;			
+	var hoverTargetsRadius = 15;			
 	var pathPoints = [];					// stores the path of the mouse
-	var deviations
-	var isTracking = false;					// flag to turn on/off tracking
+	var isTracking = false;					// flag to turn on/off tracking (i.e. path drawing code. Leap tracking is always on)
 
 	var radiusPlotForAnalysis = [];			// create an array to store the sample #, radius plot for analysis later
 
-
-
-	//////////////////////////////////////////////////////
-	// INSTRUCTIONS FOR CANVAS DRAWING LAYERS
-
-	// Setup an empty layer for userPath without any points yet
-	addUserPathLayer();
+	addUserPathLayer();						// Run a function to setup an empty layer for userPath without any points yet.
+											// look for function addUserPathLayer() below to see the instructions
 	
 	// CREATE LAYER FOR SPIRAL GUIDELINE
 	$('canvas').drawLine({
@@ -35,20 +28,20 @@ $( document ).ready(function() {
 		layer: true
 	});
 
-	// ADD GUIDELINE POINTS TO THE GUIDELINE LAYER
+	// ADD THE SPIRAL GUIDELINE POINTS TO THE LAYER AND DRAW IT
 	$('canvas').setLayer('guideline', spiral.guidelinePoints)
 	.drawLayers();
-	
 
-	// DRAW THE STARTING CIRCLE
+	// Draw the starting circle on the canvas using drawArc method
 	$('canvas').drawArc({
 	  fillStyle: '#0a0', // green
 	  opacity: 0.75,
-	  x: spiral.startPoint.x, y: spiral.startPoint.y,
+	  x: spiral.startPoint.x, 
+	  y: spiral.startPoint.y,
 	  radius: hoverTargetsRadius,
 	  layer: true,
-	  name: 'startCircle',
-	  index: 2
+	  name: 'startCircle'
+	  // Notice! mouseover and mouseout functions are removed
 	});
 
 	// DRAW THE TARGET CIRCLE
@@ -58,8 +51,8 @@ $( document ).ready(function() {
 	  x: spiral.endPoint.x, y: spiral.endPoint.y,
 	  radius: hoverTargetsRadius,
 	  layer: true,
-	  name: 'targetCircle',
-	  index:3
+	  name: 'targetCircle'
+	  // Notice! mouseover and mouseout functions are removed		
 	});
 
 	// DRAW INSTRUCTIONS TEXT
@@ -70,7 +63,7 @@ $( document ).ready(function() {
 	  fontFamily: 'Verdana, sans-serif',
 	  text: 'Mouseover the green circle and trace the spiral to the blue circle.',
 	  layer: true,
-	  name: 'instructionsText'
+	  name: 'instructionsText'	
 	});
 
 	// DRAW RESET BUTTON
@@ -81,11 +74,12 @@ $( document ).ready(function() {
 		layer: true,
 		name: 'resetButton',
 		cornerRadius: 10,
-		index:0,
 		click: function(){
 			resetPath();
 		}
 	});
+
+	// DRAW TEXT ON RESET BUTTON
 	$('canvas').drawText({
 		fillStyle: '#fff',
 		x: $('canvas').getLayer('resetButton').x,
@@ -95,8 +89,7 @@ $( document ).ready(function() {
 		text: 'Reset',
 		layer: true,
 		name: 'resetText',
-		intangible: true,
-		index: 1
+		intangible: true
 	});
 
 	// LEAP MOTION TEXT POSITION
@@ -117,7 +110,6 @@ $( document ).ready(function() {
 	  layer: true,
 	  name: 'leapCursor',
 	  visible: false,
-
 	});
 
 	function addUserPathLayer(){
@@ -148,34 +140,42 @@ $( document ).ready(function() {
 	Leap.loop({}, function(frame) {
 		// All the data we need is passed to the object called frame, for every capture frame.
 
-        // Get a pointable (finger or any stick tool) and normalize the tip position
-        if(frame.pointables.length > 0){
+        if(frame.pointables.length > 0){ 
+        	// There is at least one pointable (finger or any stick tool) object in the field, so get to work!
 
-	        var pointable = frame.pointables[0];
+        	// Take the first pointable currently in the frame and normalize the tip position
+	        var pointable = frame.pointables[0]; 
 	        var interactionBox = frame.interactionBox;
 	        var normalizedPosition = interactionBox.normalizePoint(pointable.tipPosition, true);
 	        
-	        var leapCursorLayer = $('canvas').getLayer('leapCursor'); 
-
 	        // Convert the normalized coordinates to span the canvas
 	        var pointerOnCanvas = {x: $('canvas').width() * normalizedPosition[0],
 	        					   y: $('canvas').height() * (1 - normalizedPosition[1])};
 	        // we can ignore z for a 2D context
 
-	        // if the point moved, check collision with start circle
+	       	var leapCursorLayer = $('canvas').getLayer('leapCursor'); 
+
+	        // if the fingertip moved since last frame, check if it collides with the startCircle layer
+	        // a != b means 'a does not equal b'. || means OR, and && means AND.
 	        if(	((Math.round(pointerOnCanvas.x) != Math.round(leapCursorLayer.x)) || 
 	        	(Math.round(pointerOnCanvas.y) != Math.round(leapCursorLayer.y))) &&
 	        	isTracking == false) {
 	        
+	        	// the x's or y's do not match, so enter this block.
+	        	// check if the cursor position is colliding with the start circle using a custom method
+	        	// collisionTest() returns true or false and that value is assigned to isTracking.
 	        	isTracking = collisionTest(leapCursorLayer, $('canvas').getLayer('startCircle'));
 
 	        }else if(isTracking == true && collisionTest(leapCursorLayer, $('canvas').getLayer('targetCircle'))){
-	        	// already drawing path and hit the targetCircle
+	        	// else if the user already is drawing a path and has hit the targetCircle,
+	        	// turn off tracking and analyze
 	        	isTracking = false;
 		   		var analysis = new Analysis(radiusPlotForAnalysis);
+		   		analysis.printResults();
 	        }
 	        
-	        $('canvas').setLayer('leapxy',{text: '(' + pointerOnCanvas.x.toFixed() + ', ' + pointerOnCanvas.y.toFixed() + ')' })       
+	        // Update the text box layer with the fingertip's current coordinates
+	        $('canvas').setLayer('leapxy',{text: '(' + pointerOnCanvas.x.toFixed() + ', ' + pointerOnCanvas.y.toFixed() + ')' });
 	        leapCursorLayer.x = pointerOnCanvas.x;
 	        leapCursorLayer.y = pointerOnCanvas.y;
 	        leapCursorLayer.visible = true;
@@ -183,7 +183,6 @@ $( document ).ready(function() {
 	        if(isTracking){ 	
 				// Create a path following the leapCursorLayer
 				// add a point to the path array
-
 				pathPoints.push([pointerOnCanvas.x, pointerOnCanvas.y]);	// add the cursor coordinates into an array
 
 				var i = pathPoints.length;	// use this # to create the property name e.g. x1, x2, x3, etc
@@ -198,6 +197,7 @@ $( document ).ready(function() {
 	        $('canvas').drawLayers();
 
 	    }else{
+	    	$('canvas').setLayer('leapxy',{text: 'No Finger!' });	// turn off coordinates text output
 	    	$('canvas').setLayer('leapCursor',{visible:false})
 	    	.drawLayers();
 	    }
@@ -205,17 +205,15 @@ $( document ).ready(function() {
 	});
 
 	function collisionTest(obj1,obj2){
-		// This functions tests if the center of obj1 layer has entered the box around obj2 layer
+		// This function tests if the distance between the centers of two round layers 
+		// is less than the sum of their radii. If so, there is a collision.
 		// assumes obj1 and obj2 are type: arc layers
-		var diffInX = (obj2.x + obj2.radius) - obj1.x;
-		var diffInY = (obj2.y + obj2.radius) - obj1.y;
+		var sumOfRadii = obj1.radius + obj2.radius;
+		var diffInX = obj2.x - obj1.x;
+		var diffInY = obj2.y - obj1.y;
+		var vectorMagnitude = Math.sqrt(diffInX*diffInX + diffInY*diffInY);
 
-		if((diffInX < obj2.radius*2) && (diffInX > 0) && (diffInY < obj2.radius*2) && (diffInY > 0)){
-			// hit detected!	
-			return true;
-		}else {
-			return false;
-		}
+		return vectorMagnitude < sumOfRadii; 
 	}
 	
 });

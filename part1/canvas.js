@@ -16,9 +16,9 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	
 	var endPoint = {x:700, y:startPoint.y};	// set x to 700 pixels and use the same y as the startPoint
 
-	var hoverTargetsRadius = 20;	// how big should the green and blue circles' radii be?
-	var pathPoints = [];			// creates an array (a list) of all the points that make the cursor's path
-	var isTracking = false;			// flag to turn on/off cursor tracking. Keep off (false) to start.
+	var hoverTargetsRadius = 20; // how big should the green and blue circles' radii be?
+	var pathPoints = [];				 // creates an array (a list) of all the points that make the cursor's path
+	var isTracking = false;			 // flag to turn on/off cursor tracking. Keep off (false) to start.
 
 	addUserPathLayer();		// Run a function to setup an empty layer for userPath without any points yet.
 							// look for function addUserPathLayer() below to see the instructions
@@ -29,9 +29,9 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 		y1: startPoint.y,						// line starts in the vertical middle of the green starting circle
 		x2: endPoint.x - hoverTargetsRadius, 	// line finishes on the left side of the blue target circle
 		y2: endPoint.y,							// line finishes in the vertical middle of the blue target circle
-		layer:true,								// create a new drawing layer on the canvas
+		layer:true,									// create a new drawing layer on the canvas
 		strokeWidth: 3,							// 3px thick line
-		strokeStyle: '#aaa', 					// #aaa is hexcode for a gray
+		strokeStyle: '#aaa', 				// #aaa is hexcode for a gray
 		visible: false,							// hide the line for now
 		name: 'guideline'						// we can refer to this layer as 'guideline' later on
 	});
@@ -41,15 +41,15 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	  fillStyle: '#0a0', 						// code for a shade of green
 	  x: startPoint.x, 							
 	  y: startPoint.y,
-	  radius: hoverTargetsRadius,				// defined at the top
+	  radius: hoverTargetsRadius,		// defined at the top
 	  layer: true,
 	  name: 'startCircle',
 	  mouseover: function() {					// when the cursor moves over the starting shape, run this function
 	    $(this).animateLayer('startCircle', {	// animate the color to a brighter green in 250ms. 
 	      fillStyle: '#0d0'						// This isn't necessary for the code to work, but is a subtle way to let user know 
-	    }, 250);								// 'something is happening' to improve the user experience
+	    }, 250);											// 'something is happening' to improve the user experience
 	   
-	  	resetPath();							// run resetPath() function (find it below)
+	  	resetPath();									// run resetPath() function (find it below)
 	  	isTracking = true;						// now set isTracking to true! the cursorTracker's mousemove function will work now
 	  	showGuideline(false);					// hide the grey guideline (find the function below)
 	  },
@@ -70,18 +70,18 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	  name: 'targetCircle',
 	  mouseover: function() {
 	    $(this).animateLayer('targetCircle', {
-	      fillStyle: '#55f'						// code for a lighter shade of blue
+	      fillStyle: '#55f'				// code for a lighter shade of blue
 	    }, 250);
 
 	    if(isTracking){
 		    isTracking = false;						
-		    showGuideline(true);					// show the grey guideline (find the function below)
-		    analyzePerformance();					// see the analyzePerformance() function below
+		    showGuideline(true);		// show the grey guideline (find the function below)
+		    analyzePerformance();		// see the analyzePerformance() function below
 		}
 	  },
 	  mouseout: function() {
 	  	 $(this).animateLayer('targetCircle', {
-	  	  	fillStyle: '#00d'					// animate back to the original blue
+	  	  	fillStyle: '#00d'			// animate back to the original blue
 	  	}, 250);
 	  }
 
@@ -90,7 +90,7 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 	// Create a layer containing the text instructions at the top of the canvas using .drawText() method
 	$('canvas').drawText({
 	  fillStyle: '#000',	// color code for black
-	  x: 400, y: 20,		// position relative to the canvas
+	  x: 400, y: 20,			// position relative to the canvas
 	  fontSize: 16,
 	  text: 'Mouseover the green circle and draw a straight line to the blue circle.',
 	  layer: true,
