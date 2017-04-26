@@ -77,7 +77,7 @@ $( document ).ready(function() {	// when the html file finishes loading in the b
 		    isTracking = false;						
 		    showGuideline(true);		// show the grey guideline (find the function below)
 		    analyzePerformance();		// see the analyzePerformance() function below
-		}
+			}
 	  },
 	  mouseout: function() {
 	  	 $(this).animateLayer('targetCircle', {
