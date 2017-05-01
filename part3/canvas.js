@@ -182,22 +182,26 @@ $( document ).ready(function() {
 
 	        if(isTracking){ 	
 				// Create a path following the leapCursorLayer
-				// add a point to the path array
-				pathPoints.push([pointerOnCanvas.x, pointerOnCanvas.y]);	// add the cursor coordinates into an array
+				// by adding an array of the x,y coordinates as an element in the pathPoints array
+				// this creates a "nested" or "multidimensional" array
+				pathPoints.push([pointerOnCanvas.x, pointerOnCanvas.y]);
 
 				var i = pathPoints.length;	// use this # to create the property name e.g. x1, x2, x3, etc
 				var pathLayer = $('canvas').getLayer('userPath');	
 				pathLayer['x'+i] = pathPoints[i-1][0];
 				pathLayer['y'+i] = pathPoints[i-1][1];
 
+				// Here we store the x,y point as if we moved the spiral center to the canvas origin (0,0)
+				// Then we get the magnitude of the (x,y) vector (i.e. radius) without any translational 
+				// corrections in the Analysis methods 
 				radiusPlotForAnalysis.push({x: pathPoints[i-1][0] - spiral.startPoint.x, 
-										  y: pathPoints[i-1][1] - spiral.startPoint.y});
+										  	y: pathPoints[i-1][1] - spiral.startPoint.y});
 			}
 
 	        $('canvas').drawLayers();
 
 	    }else{
-	    	$('canvas').setLayer('leapxy',{text: 'No Finger!' });	// turn off coordinates text output
+	    	$('canvas').setLayer('leapxy',{text: 'No Finger!' });	// turn off coordinates' text output
 	    	$('canvas').setLayer('leapCursor',{visible:false})
 	    	.drawLayers();
 	    }
