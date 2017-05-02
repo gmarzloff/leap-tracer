@@ -166,12 +166,12 @@ $( document ).ready(function() {
 	        	// collisionTest() returns true or false and that value is assigned to isTracking.
 	        	isTracking = collisionTest(leapCursorLayer, $('canvas').getLayer('startCircle'));
 
-	        }else if(isTracking == true && collisionTest(leapCursorLayer, $('canvas').getLayer('targetCircle'))){
+	        }else if(isTracking == true && collisionTest(leapCursorLayer, $('canvas').getLayer('targetCircle')) == true){
 	        	// else if the user already is drawing a path and has hit the targetCircle,
 	        	// turn off tracking and analyze
 	        	isTracking = false;
-		   		var analysis = new Analysis(radiusPlotForAnalysis);
-		   		analysis.printResults();
+		   			var analysis = new Analysis(radiusPlotForAnalysis);
+		   			analysis.printResults();
 	        }
 	        
 	        // Update the text box layer with the fingertip's current coordinates
@@ -180,23 +180,23 @@ $( document ).ready(function() {
 	        leapCursorLayer.y = pointerOnCanvas.y;
 	        leapCursorLayer.visible = true;
 
-	        if(isTracking){ 	
-				// Create a path following the leapCursorLayer
-				// by adding an array of the x,y coordinates as an element in the pathPoints array
-				// this creates a "nested" or "multidimensional" array
-				pathPoints.push([pointerOnCanvas.x, pointerOnCanvas.y]);
+	        if(isTracking == true){ 	
+						// Create a path following the leapCursorLayer
+						// by adding an array of the x,y coordinates as an element in the pathPoints array
+						// this creates a "nested" or "multidimensional" array
+						pathPoints.push([pointerOnCanvas.x, pointerOnCanvas.y]);
 
-				var i = pathPoints.length;	// use this # to create the property name e.g. x1, x2, x3, etc
-				var pathLayer = $('canvas').getLayer('userPath');	
-				pathLayer['x'+i] = pathPoints[i-1][0];
-				pathLayer['y'+i] = pathPoints[i-1][1];
+						var i = pathPoints.length;	// use this # to create the property name e.g. x1, x2, x3, etc
+						var pathLayer = $('canvas').getLayer('userPath');	
+						pathLayer['x'+i] = pathPoints[i-1][0];
+						pathLayer['y'+i] = pathPoints[i-1][1];
 
-				// Here we store the x,y point as if we moved the spiral center to the canvas origin (0,0)
-				// Then we get the magnitude of the (x,y) vector (i.e. radius) without any translational 
-				// corrections in the Analysis methods 
-				radiusPlotForAnalysis.push({x: pathPoints[i-1][0] - spiral.startPoint.x, 
-										  	y: pathPoints[i-1][1] - spiral.startPoint.y});
-			}
+						// Here we store the x,y point as if we moved the spiral center to the canvas origin (0,0)
+						// Then we get the magnitude of the (x,y) vector (i.e. radius) without any translational 
+						// corrections in the Analysis methods 
+						radiusPlotForAnalysis.push({x: pathPoints[i-1][0] - spiral.startPoint.x, 
+												  	y: pathPoints[i-1][1] - spiral.startPoint.y});
+					}
 
 	        $('canvas').drawLayers();
 
@@ -217,7 +217,7 @@ $( document ).ready(function() {
 		var diffInY = obj2.y - obj1.y;
 		var vectorMagnitude = Math.sqrt(diffInX*diffInX + diffInY*diffInY);
 
-		return vectorMagnitude < sumOfRadii; 
+		return vectorMagnitude < sumOfRadii;
 	}
 	
 });
