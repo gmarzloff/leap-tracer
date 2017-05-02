@@ -5,7 +5,7 @@
 ## Introduction
 Leap Motion is a relatively low-cost consumer device that provides infrared tracking of a user's hands and fingers in space. The product debuted as an interface for desktop/laptop applications, but its focus has shifted to providing hand data for virtual reality systems.
 
-Leap offers software developer kits, or code libraries that developers can use to interface with their own software, for a variety of programming languages. In this tutorial set, you will use Leap Motion to re-create a clinical test for measuring hand tremor.   Please refer to the full tutorial articles [here](#). 
+Leap offers software developer kits, or code libraries that developers can use to interface with their own software, for a variety of programming languages. In this tutorial set, you will use Leap Motion to re-create a clinical test for measuring hand tremor.   Please refer to the full tutorial articles [here](https://medium.com/physiatry/build-a-web-app-to-test-fine-motor-coordination-with-leap-motion-part-1-programming-tutorial-94423d20f8b7). 
 
 ## Setup
 For the first two parts of the tutorial, you will only need: 
